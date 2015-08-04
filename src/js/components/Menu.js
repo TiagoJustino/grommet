@@ -39,6 +39,18 @@ var MenuDrop = React.createClass({
       down: this._onDownKeyPress
     };
     this.startListeningToKeyboard(this._keyboardHandlers);
+    var menuItems = this.refs.navContainer.getDOMNode().childNodes;
+    for (var i = 0; i < menuItems.length; i++) {
+      menuItems[i].setAttribute('role', 'menuitem');
+      
+      menuItems[i].setAttribute('id', menuItems[i].getAttribute('data-reactid'));
+      // aria-selected tells informs AT which menu item is selected for that menu container.
+      if (menuItems[i].className.split(/\s+/).indexOf('active') > -1) {
+        menuItems[i].setAttribute('aria-selected', true);
+      } else {
+        menuItems[i].setAttribute('aria-selected', false);
+      }
+    }
   },
 
   componentWillUnmount: function () {
@@ -55,6 +67,7 @@ var MenuDrop = React.createClass({
     }
 
     this.activeMenuItem.focus();
+    this.refs.menuDrop.getDOMNode().setAttribute('aria-activedescendant', this.activeMenuItem.getAttribute('id'));
     // Stops KeyboardAccelerators from calling the other listeners. Works limilar to event.stopPropagation().
     return true;
   },
@@ -67,6 +80,7 @@ var MenuDrop = React.createClass({
     }
 
     this.activeMenuItem.focus();
+    this.refs.menuDrop.getDOMNode().setAttribute('aria-activedescendant', this.activeMenuItem.getAttribute('id'));
     // Stops KeyboardAccelerators from calling the other listeners. Works limilar to event.stopPropagation().
     return true;
   },
@@ -103,7 +117,7 @@ var MenuDrop = React.createClass({
     }
 
     return (
-      <div id={this.props.id} className={classes.join(' ')}
+      <div ref="menuDrop" id={this.props.id} className={classes.join(' ')}
         onClick={this.props.onClick}>
         {first}
         {second}
@@ -211,6 +225,13 @@ var Menu = React.createClass({
       this.setState({
         dropId: 'menu-drop-' + controlElement.getAttribute('data-reactid')
       });
+
+      controlElement.setAttribute('role', 'menu');
+      var expanded = this.state.state === 'expanded';
+      controlElement.setAttribute('aria-expanded', expanded);
+      if (this.props.label) {
+        controlElement.setAttribute('aria-label', this.props.label);
+      }
     }
 
     if (this.props.inline && this.props.responsive) {
@@ -257,6 +278,11 @@ var Menu = React.createClass({
         this._drop.render(this._renderDrop());
         break;
     }
+    if (this.refs.control) {
+      var controlElement = this.refs.control.getDOMNode();
+      var expanded = this.state.state === 'expanded';
+      controlElement.setAttribute('aria-expanded', expanded);
+    }
   },
 
   componentWillUnmount: function () {
@@ -290,7 +316,7 @@ var Menu = React.createClass({
           <div className={controlClassName + "-icon"}>
             {icon}
           </div>
-          <span className={controlClassName + "-label"}>{this.props.label}</span>
+          <span tabindex="-1" className={controlClassName + "-label"}>{this.props.label}</span>
           <DropCaretIcon className={controlClassName + "-drop-icon"} />
         </div>
       );
