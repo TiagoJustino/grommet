@@ -46,6 +46,21 @@ var Accessibility = React.createClass({
               </tr>
             </tbody>
           </Table>
+
+          <h3>Lang attribute</h3>
+          <p>
+            To support Accessibility Technologies the "lang"
+            attribute needs to be present in the "html" tag.
+            In case you don’t add the "lang" attribute,
+            Grommet will set it according to the user browser’s
+            locale. Optionally, you can set the "lang" on Grommet
+            App component as follow:
+          </p>
+          <pre><code className="html">
+            {"<App lang=\"en-US\">\n  ...\n</App>"}
+          </code></pre>
+          <h3>Skip Links</h3>
+          <p>Spik links allow blah</p>
         </Section>
       </Article>
     );
