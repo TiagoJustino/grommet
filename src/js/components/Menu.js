@@ -43,7 +43,9 @@ var MenuDrop = React.createClass({
     for (var i = 0; i < menuItems.length; i++) {
       menuItems[i].setAttribute('role', 'menuitem');
       
-      menuItems[i].setAttribute('id', menuItems[i].getAttribute('data-reactid'));
+      if (!menuItems[i].getAttribute('id')) {
+        menuItems[i].setAttribute('id', menuItems[i].getAttribute('data-reactid'));
+      }
       // aria-selected tells informs AT which menu item is selected for that menu container.
       if (menuItems[i].className.split(/\s+/).indexOf('active') > -1) {
         menuItems[i].setAttribute('aria-selected', true);
