@@ -11,6 +11,7 @@ var IndexQuery = require('../../utils/IndexQuery');
 var IntlMixin = require('../../mixins/GrommetIntlMixin');
 //var ReactIntl = require('react-intl');
 //var FormattedMessage = ReactIntl.FormattedMessage;
+var uuid = require('node-uuid');
 
 var CLASS_ROOT = "index-filters";
 
@@ -103,13 +104,15 @@ var IndexFilters = React.createClass({
 
   render: function() {
     var activeFilterCount = 0;
+    this.labelsMap = {};
 
     var filters = this.props.options.attributes
       .filter(function (attribute) {
         return attribute.hasOwnProperty('filter');
       })
       .map(function (attribute) {
-
+        var labelId = 'label-' + uuid.v1();
+        this.labelsMap[labelId] = [];
         var values = attribute.filter.map(function (value) {
           var id = attribute.attribute + '-' + value;
           var active = this.state.data[attribute.attribute][value];
@@ -118,7 +121,7 @@ var IndexFilters = React.createClass({
           }
           var label = value ? this.getGrommetIntlMessage(value) : '';
           return (
-            <CheckBox key={id} className={CLASS_ROOT + "__filter-value"}
+            <CheckBox key={id} aria_describedby={labelId} className={CLASS_ROOT + "__filter-value"}
               id={id} label={label}
               checked={active}
               onChange={this._onChange
@@ -127,13 +130,14 @@ var IndexFilters = React.createClass({
         }, this);
 
         var components = [];
+        
         components.push(
-          <h4 key="label" className={CLASS_ROOT + "__filter-label"}>
+          <h4 tabIndex="-1" aria-hidden="true" key="label" id={labelId} className={CLASS_ROOT + "__filter-label"}>
             {this.getGrommetIntlMessage(attribute.label)}
           </h4>
         );
         components.push(
-          <CheckBox key="all" className={CLASS_ROOT + "__filter-value"}
+          <CheckBox key="all" aria_describedby={labelId} className={CLASS_ROOT + "__filter-value"}
             id={attribute.attribute + '-all'}
             label={this.getGrommetIntlMessage('All')}
             checked={this.state.data[attribute.attribute].all}

@@ -41,13 +41,18 @@ var MenuDrop = React.createClass({
     this.startListeningToKeyboard(this._keyboardHandlers);
     var menuItems = this.refs.navContainer.getDOMNode().childNodes;
     for (var i = 0; i < menuItems.length; i++) {
+      var classes = menuItems[i].className.split(/\s+/);
+      var tagName = menuItems[i].tagName.toLowerCase();
+      if (tagName !== 'button' && tagName !== 'a' && classes.indexOf('check-box') === -1) {
+        continue;
+      }
       menuItems[i].setAttribute('role', 'menuitem');
       
       if (!menuItems[i].getAttribute('id')) {
         menuItems[i].setAttribute('id', menuItems[i].getAttribute('data-reactid'));
       }
-      // aria-selected tells informs AT which menu item is selected for that menu container.
-      if (menuItems[i].className.split(/\s+/).indexOf('active') > -1) {
+      // aria-selected informs AT which menu item is selected for that menu container.
+      if (classes.indexOf('active') > -1) {
         menuItems[i].setAttribute('aria-selected', true);
       } else {
         menuItems[i].setAttribute('aria-selected', false);
@@ -60,12 +65,23 @@ var MenuDrop = React.createClass({
   },
 
   _onUpKeyPress: function (event) {
+    event.preventDefault();
+    var menuItems = this.refs.navContainer.getDOMNode().childNodes;
     if (!this.activeMenuItem) {
-      var menuItems = this.refs.navContainer.getDOMNode().childNodes;
       var lastMenuItem = menuItems[menuItems.length - 1];
       this.activeMenuItem = lastMenuItem;
     } else if (this.activeMenuItem.previousSibling) {
       this.activeMenuItem = this.activeMenuItem.previousSibling;
+    }
+
+    var classes = this.activeMenuItem.className.split(/\s+/);
+    var tagName = this.activeMenuItem.tagName.toLowerCase();
+    if (tagName !== 'button' && tagName !== 'a' && classes.indexOf('check-box') === -1) {
+      if (this.activeMenuItem === menuItems[0]) {
+        return true;
+      } else {
+        return this._onUpKeyPress(event);
+      }
     }
 
     this.activeMenuItem.focus();
@@ -75,10 +91,22 @@ var MenuDrop = React.createClass({
   },
 
   _onDownKeyPress: function (event) {
+    event.preventDefault();
+    var menuItems = this.refs.navContainer.getDOMNode().childNodes;
     if (!this.activeMenuItem) {
-      this.activeMenuItem = this.refs.navContainer.getDOMNode().childNodes[0];
+      this.activeMenuItem = menuItems[0];
     } else if (this.activeMenuItem.nextSibling) {
       this.activeMenuItem = this.activeMenuItem.nextSibling;
+    }
+
+    var classes = this.activeMenuItem.className.split(/\s+/);
+    var tagName = this.activeMenuItem.tagName.toLowerCase();
+    if (tagName !== 'button' && tagName !== 'a' && classes.indexOf('check-box') === -1) {
+      if (this.activeMenuItem === menuItems[menuItems.length - 1]) {
+        return true;
+      } else {
+        return this._onDownKeyPress(event);
+      }
     }
 
     this.activeMenuItem.focus();
@@ -233,6 +261,16 @@ var Menu = React.createClass({
       controlElement.setAttribute('aria-expanded', expanded);
       if (this.props.label) {
         controlElement.setAttribute('aria-label', this.props.label);
+      } else if (this.props.icon) {
+        try {
+          var icon = controlElement.querySelectorAll('.control-icon')[0];
+          if (!icon.getAttribute('id')) {
+            icon.setAttribute('id', icon.getAttribute('data-reactid'));
+          }
+          controlElement.setAttribute('aria-labelledby', icon.getAttribute('id'));
+        } catch (exception) {
+          console.log('Unable to add aria-label to Menu component.');
+        }
       }
     }
 
@@ -246,7 +284,6 @@ var Menu = React.createClass({
 
     var activeKeyboardHandlers = {
       esc: this._onClose,
-      space: this._onClose,
       tab: this._onClose
     };
     var focusedKeyboardHandlers = {
