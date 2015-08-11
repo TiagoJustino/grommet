@@ -43,7 +43,7 @@ var CheckBox = React.createClass({
             <path fill="none" d="M6,11.3 L10.3,16 L18,6.2"></path>
           </svg>
         </span>
-        <span id={labelId} tabIndex="-1" className={CLASS_ROOT + "__label"}>
+        <span role="label" id={labelId} tabIndex="-1" className={CLASS_ROOT + "__label"}>
           {this.props.label}
         </span>
       </label>
