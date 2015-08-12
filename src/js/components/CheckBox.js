@@ -32,7 +32,7 @@ var CheckBox = React.createClass({
       <label className={classes.join(' ')}
         aria-describedby={this.props.aria_describedby}
         aria-lebelledby={labelId}>
-        <input className={CLASS_ROOT + "__input"}
+        <input tabIndex="0" className={CLASS_ROOT + "__input"}
           id={this.props.id} name={this.props.name} type="checkbox"
           checked={this.props.checked}
           defaultChecked={this.props.defaultChecked}

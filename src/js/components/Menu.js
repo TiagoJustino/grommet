@@ -283,8 +283,7 @@ var Menu = React.createClass({
     // Set up keyboard listeners appropriate to the current state.
 
     var activeKeyboardHandlers = {
-      esc: this._onClose,
-      tab: this._onClose
+      esc: this._onClose
     };
     var focusedKeyboardHandlers = {
       space: this._onOpen,
@@ -385,7 +384,7 @@ var Menu = React.createClass({
       onClick = this._onSink;
     }
     return (
-      <MenuDrop router={this.context.router}
+      <MenuDrop tabIndex="-1" router={this.context.router}
         dropAlign={this.props.dropAlign}
         dropColorIndex={this.props.dropColorIndex}
         small={this.props.small}

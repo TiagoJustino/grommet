@@ -135,7 +135,8 @@ var IndexFilters = React.createClass({
         );
         */
         components.push(
-          <CheckBox key="all" className={CLASS_ROOT + "__filter-value"}
+          <CheckBox key={attribute.attribute + '-all'}
+            className={CLASS_ROOT + "__filter-value"}
             id={attribute.attribute + '-all'}
             label={this.getGrommetIntlMessage('All')}
             checked={this.state.data[attribute.attribute].all}
