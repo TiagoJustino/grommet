@@ -47,6 +47,14 @@ var Accessibility = React.createClass({
             </tbody>
           </Table>
 
+          <h3>Menu</h3>
+          <p>
+            The Grommet Menu component also support screen readers. By default,
+            the Menu component assumes the "menu" role and the focusable
+            children passed to this component receive the "menuitem" role. The
+            user can navigate the Menu by using either the tab or arrow keys.
+          </p>
+
           <h3>Lang attribute</h3>
           <p>
             To support Accessibility Technologies the "lang"
